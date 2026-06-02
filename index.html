@@ -1,1 +1,302 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Բարի վերադարձ, Տարո՛ն ջան</title>
+    <style>
+        /* Ընդհանուր ոճեր */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        body {
+            background: linear-gradient(135deg, #112211 0%, #1e3f20 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Հայկական զարդանախշի էֆեկտ վերևում */
+        .header-pattern {
+            width: 100%;
+            max-width: 800px;
+            height: 20px;
+            background-image: radial-gradient(circle at 50% 50%, #d4af37 10%, transparent 20%), 
+                              linear-gradient(45deg, transparent 45%, #d4af37 45%, #d4af37 55%, transparent 55%);
+            background-size: 20px 20px;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        /* Գլխավոր կոնտեյներ */
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #d4af37; /* Ոսկեգույն հայկական շեշտադրում */
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .sub-title {
+            font-size: 1.2rem;
+            color: #a2c4a2;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        /* Նկարների պատկերասրահ */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 3px solid #d4af37;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Հետհաշվարկի (Countdown) ոճեր */
+        .countdown-section {
+            background: rgba(17, 34, 17, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            border: 1px solid #4a7c59;
+        }
+
+        .countdown-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            background: linear-gradient(135deg, #2d5a27 0%, #1e3f20 100%);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 80px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border-bottom: 3px solid #d4af37;
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .time-box .label {
+            font-size: 0.8rem;
+            color: #d4af37;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* Օրացույցի ոճեր */
+        .calendar-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .calendar-month {
+            font-size: 1.5rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .weekday {
+            font-weight: bold;
+            color: #a2c4a2;
+            padding: 5px;
+            font-size: 0.9rem;
+        }
+
+        .day {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        /* Դատարկ օրեր ամսվա սկզբի համար (Հուլիս 2026-ը սկսվում է Չորեքշաբթիից) */
+        .empty-day {
+            background: transparent;
+        }
+
+        /* Հատուկ նշված Հուլիսի 23 */
+        .target-day {
+            background: linear-gradient(135deg, #d4af37 0%, #b89020 100%) !important;
+            color: #112211 !important;
+            font-weight: bold;
+            box-shadow: 0 0 15px #d4af37;
+            animation: pulse 2s infinite;
+            border-radius: 5px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        /* Բարեմաղթանք ներքևում */
+        .footer-wish {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            color: #d4af37;
+            line-height: 1.6;
+        }
+
+        .army-star {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-pattern"></div>
+
+    <div class="container">
+        <h1>Բարի վերադարձ, ՏԱՐՈՆ ՋԱՆ 🇦🇲</h1>
+        <p class="sub-title">Հպարտությամբ ու անհամբերությամբ սպասում ենք քեզ:</p>
+
+        <div class="gallery">
+            <img src="https://cdn.shopify.com/s/files/1/0953/9973/9676/files/photo_2026-06-02_23-03-46.jpg?v=1780427107" alt="Տարոն">
+            <img src="https://cdn.shopify.com/s/files/1/0953/9973/9676/files/photo_2026-06-02_23-03-59.jpg?v=1780427107" alt="Տարոն">
+            <img src="https://cdn.shopify.com/s/files/1/0953/9973/9676/files/photo_2026-06-02_23-04-07.jpg?v=1780427107" alt="Տարոն">
+        </div>
+
+        <div class="countdown-section">
+            <p class="countdown-title">⏳ Տունդարձին մնաց՝</p>
+            <div class="timer" id="countdown">
+                <div class="time-box">
+                    <span id="days">00</span>
+                    <div class="label">Օր</div>
+                </div>
+                <div class="time-box">
+                    <span id="hours">00</span>
+                    <div class="label">Ժամ</div>
+                </div>
+                <div class="time-box">
+                    <span id="minutes">00</span>
+                    <div class="label">Րոպե</div>
+                </div>
+                <div class="time-box">
+                    <span id="seconds">00</span>
+                    <div class="label">Վայրկյան</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-section">
+            <div class="calendar-month">📅 ՀՈՒԼԻՍ 2026</div>
+            <div class="calendar-grid">
+                <div class="weekday">Երկ</div>
+                <div class="weekday">Երք</div>
+                <div class="weekday">Չոր</div>
+                <div class="weekday">Հնգ</div>
+                <div class="weekday">Ուրբ</div>
+                <div class="weekday">Շբթ</div>
+                <div class="weekday">Կիր</div>
+
+                <div class="empty-day"></div>
+                <div class="empty-day"></div>
+
+                <div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
+                <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div>
+                <div class="day">11</div><div class="day">12</div><div class="day">13</div><div class="day">14</div><div class="day">15</div>
+                <div class="day">16</div><div class="day">17</div><div class="day">18</div><div class="day">19</div><div class="day">20</div>
+                <div class="day">21</div><div class="day">22</div>
+                
+                <div class="day target-day" title="ՏԱՐՈՆԻ ՏՈՒՆԴԱՐՁԸ">23 🎉</div>
+                
+                <div class="day">24</div><div class="day">25</div><div class="day">26</div><div class="day">27</div>
+                <div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day">31</div>
+            </div>
+        </div>
+
+        <div class="army-star">⭐ 🇦🇲 ⭐</div>
+        <p class="footer-wish">Փա՛ռք մեր արի զինվորներին, որ պահում են մեր հայրենիքի սահմանները: <br> Անփորձանք ծառայություն ու բարի վերադարձ, Տարո՛ն ջան:</p>
+    </div>
+
+    <script>
+        // Հետհաշվարկի թիրախային ամսաթիվը՝ Հուլիսի 23, 2026թ.
+        const countdownDate = new Date("July 23, 2026 00:00:00").getTime();
+
+        const timerFunction = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            // Ժամանակի հաշվարկ օրերի, ժամերի, րոպեների և վայրկյանների համար
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Արդյունքների տեղադրում համապատասխան ID-ներով վանդակներում
+            document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+
+            // Եթե հետհաշվարկն ավարտվի
+            if (distance < 0) {
+                clearInterval(timerFunction);
+                document.getElementById("countdown").innerHTML = "<h2 style='color: #d4af37; width:100%; text-shadow: 0 0 10px #d4af37;'>🎉 ՏԱՐՈՆԸ ՏԱՆՆ Է: ԲԱՐԻ ՎԵՐԱԴԱՐՁ: 🎉</h2>";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
